@@ -7,7 +7,27 @@
   --card-background: rgb(83, 77, 77);
   --accent: #8b3dff;
 }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f0f0f0; /* Color de fondo en caso de que el audio no se reproduzca o esté deshabilitado */
+    }
 
+    audio {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Coloca el audio detrás del contenido de la página */
+    }
+  </style>
 /* ---- reset ---- */
 body {
   font: normal 78% Arial, Helvetica, sans-serif;
