@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Barcos</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url('https://elinsanocapo.github.io/GAmes-new-/actionimg/Screenshot%202024-06-11%2014.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: calc(50% + 50px) center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative; /* Importante para posicionar los círculos */
+        }
+        .game-area {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border: 1%;
+            box-shadow: none;
+            display: flex;
+        }
+        .restricted-area {
+            width: 13%;
+            height: 880%;
+            position: absolute;
+            top: -1%;
+            left: 24%;
+            border: 0px dashed #000;
+            box-sizing: border-box;
+        }
+        .ship {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            background-color: red;
+            cursor: pointer;
+        }
+        #ship-1 img {
+    width: 50px; /* Ajusta el tamaño según sea necesario */
+    height: 50px; /* Ajusta el tamaño según sea necesario */
+}
+
+#ship-2 img {
+    width: 50px; /* Ajusta el tamaño según sea necesario */
+    height: 50px; /* Ajusta el tamaño según sea necesario */
+}
+
+        .side-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20px;
+        }
+        .cube {
+            width: 100px;
+            height: 100px;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 1s ease;
+        }
+        .face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 3px solid #000;
+            line-height: 100px;
+            text-align: center;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotateY(0deg) rotateX(0deg);
+        }
+        .front  { transform: rotateY(0deg) translateZ(50px); background-color: red; }
+        .back   { transform: rotateY(180deg) translateZ(50px); background-color: green; }
+        .right  { transform: rotateY(90deg) translateZ(50px); background-color: blue; }
+        .left   { transform: rotateY(-90deg) translateZ(50px); background-color: yellow; }
+        .top    { transform: rotateX(90deg) translateZ(50px); background-color: purple; }
+        .bottom { transform: rotateX(-90deg) translateZ(50px); background-color: orange; }
+        .rules {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #000;
+            width: 200px;
+            text-align: center;
+            font-size: 16px;
+            color: #000;
+        }
+        .circle {
+            width: 31px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            font-size: 26px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* CSS único para cada círculo */
+        .circle-1 { top: 88%; left: 39%; }
+        .circle-2 { top: 88%; left: 48%; }
+        .circle-3 { top: 88%; left: 57%; }
+        .circle-4 { top: 88%; left: 66%; }
+        .circle-5 { top: 88%; left: 75%; }
+        .circle-6 { top: 88%; left: 84%; }
+        .circle-7 { top: 70%; left: 84%; }
+        .circle-8 { top: 47%; left: 84%; }
+        .circle-9 { top: 25%; left: 84%; }
+        .circle-10 { top: 5%; left: 84%; }
+        .circle-11 { top: 5%; left: 84%; }
+        .circle-12 { top: 5%; left: 76%; }
+        .circle-13 { top: 5%; left: 67%; }
+        .circle-14 { top: 5%; left: 57%; }
+        .circle-15 { top: 5%; left: 48%; }
+        .circle-16 { top: 5%; left: 39%; }
+        .circle-17 { top: 5%; left: 30%; }
+        .circle-18 { top: 5%; left: 22%; }
+        .circle-19 { top: 23%; left: 22%; }
+        .circle-20 { top: 47%; left: 22%; }
+        .circle-21 { top: 66%; left: 22%; }
+        .circle-22 { top: 66%; left: 30%; }
+        .circle-23 { top: 66%; left: 40%; }
+        .circle-24 { top: 66%; left: 48%; }
+        .circle-25 { top: 66%; left: 57%; }
+        .circle-26 { top: 66%; left: 67%; }
+        .circle-27 { top: 66%; left: 75%; }
+        .circle-28 { top: 48%; left: 75%; }
+        .circle-29 { top: 28%; left: 75%; }
+        .circle-30 { top: 28%; left: 67%; }
+        .circle-31 { top: 28%; left: 58%; }
+        .circle-32 { top: 28%; left: 48%; }
+        .circle-33 { top: 28%; left: 40%; }
+        .circle-34 { top: 28%; left: 31%; }
+
+        .popup {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 300px;
+            display: none;
+            flex-direction: column;
+        }
+
+        .close-btn {
+            align-self: flex-end;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+            font-size: 20px;
+            margin: -10px -10px 0 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="game-area" id="game-area">
+        <div class="side-container">
+            <div class="cube" onclick="startCubeAnimation()" id="cube">
+                <div class="face front">1</div>
+                <div class="face back">2</div>
+                <div class="face right">3</div>
+                <div class="face left">4</div>
+                <div class="face top">5</div>
+                <div class="face bottom">6</div>
+            </div>
+            <div class="rules">
+                <p>Reglas del Juego:</p>
+                <p>1. Haz clic en una nave para seleccionarla.</p>
+                <p>2. Usa las flechas del teclado para mover la nave seleccionada.</p>
+                <p>3. Haz clic en el cubo para girarlo y mostrar un número aleatorio en cada tirada.</p>
+                <p>4. El juego termina cuando las naves alcanzan sus destinos.</p>
+            </div>
+        </div>
+        <div class="restricted-area" id="restricted-area">
+            <div class="ship" id="ship-1">
+    <img src="ruta-a-tu-imagen-azul.png" alt="Barco Azul">
+</div>
+<div class="ship" id="ship-2">
+    <img src="ruta-a-tu-imagen-verde.png" alt="Barco Verde">
+</div>
+        </div>
+    </div>
+
+    <div class="circle circle-1" onclick="showPopup(1)">1</div>
+    <div class="circle circle-2" onclick="showPopup(2)">2</div>
+    <div class="circle circle-3" onclick="showPopup(3)">3</div>
+    <div class="circle circle-4" onclick="showPopup(4)">4</div>
+    <div class="circle circle-5" onclick="showPopup(5)">5</div>
+    <div class="circle circle-6" onclick="showPopup(6)">6</div>
+    <div class="circle circle-7" onclick="showPopup(7)">7</div>
+    <div class="circle circle-8" onclick="showPopup(8)">8</div>
+    <div class="circle circle-9" onclick="showPopup(9)">9</div>
+    <div class="circle circle-10" onclick="showPopup(10)">10</div>
+    <div class="circle circle-11" onclick="showPopup(11)">11</div>
+    <div class="circle circle-12" onclick="showPopup(12)">12</div>
+    <div class="circle circle-13" onclick="showPopup(13)">13</div>
+    <div class="circle circle-14" onclick="showPopup(14)">14</div>
+    <div class="circle circle-15" onclick="showPopup(15)">15</div>
+    <div class="circle circle-16" onclick="showPopup(16)">16</div>
+    <div class="circle circle-17" onclick="showPopup(17)">17</div>
+    <div class="circle circle-18" onclick="showPopup(18)">18</div>
+    <div class="circle circle-19" onclick="showPopup(19)">19</div>
+    <div class="circle circle-20" onclick="showPopup(20)">20</div>
+    <div class="circle circle-21" onclick="showPopup(21)">21</div>
+    <div class="circle circle-22" onclick="showPopup(22)">22</div>
+    <div class="circle circle-23" onclick="showPopup(23)">23</div>
+    <div class="circle circle-24" onclick="showPopup(24)">24</div>
+    <div class="circle circle-25" onclick="showPopup(25)">25</div>
+    <div class="circle circle-26" onclick="showPopup(26)">26</div>
+    <div class="circle circle-27" onclick="showPopup(27)">27</div>
+    <div class="circle circle-28" onclick="showPopup(28)">28</div>
+    <div class="circle circle-29" onclick="showPopup(29)">29</div>
+    <div class="circle circle-30" onclick="showPopup(30)">30</div>
+    <div class="circle circle-31" onclick="showPopup(31)">31</div>
+    <div class="circle circle-32" onclick="showPopup(32)">32</div>
+    <div class="circle circle-33" onclick="showPopup(33)">33</div>
+    <div class="circle circle-34" onclick="showPopup(34)">34</div>
+
+    <div class="popup" id="popup">
+        <span class="close-btn" onclick="hidePopup()">X</span>
+        <p id="popup-text"></p>
+    </div>
+
+    <script>
+        let interval;
+        let rotationCount = 0;
+        let lastFace = null;
+
+        function getRandomRotation() {
+            const rotations = [
+                { x: 0, y: 0 },
+                { x: 0, y: 180 },
+                { x: 0, y: 90 },
+                { x: 0, y: -90 },
+                { x: 90, y: 0 },
+                { x: -90, y: 0 }
+            ];
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * rotations.length);
+            } while (rotations[randomIndex] === lastFace);
+
+            lastFace = rotations[randomIndex];
+            return rotations[randomIndex];
+        }
+
+        function changeFace() {
+            const cube = document.getElementById('cube');
+            const { x, y } = getRandomRotation();
+            cube.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`;
+        }
+
+        function startCubeAnimation() {
+            if (interval) return;
+            rotationCount = 0;
+            interval = setInterval(() => {
+                changeFace();
+                rotationCount++;
+                if (rotationCount >= 5) {
+                    clearInterval(interval);
+                    interval = null;
+                }
+            }, 1000);
+        }
+
+        let selectedShip = null;
+
+        document.querySelectorAll('.ship').forEach(ship => {
+            ship.addEventListener('click', () => {
+                selectedShip = ship;
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (!selectedShip) return;
+
+            const step = 10;
+            const gameArea = document.getElementById('game-area');
+            let top = parseInt(selectedShip.style.top) || 0;
+            let left = parseInt(selectedShip.style.left) || 0;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                    top = Math.max(0, top - step);
+                    break;
+                case 'ArrowDown':
+                    top = Math.min(gameArea.offsetHeight - selectedShip.offsetHeight, top + step);
+                    break;
+                case 'ArrowLeft':
+                    left = Math.max(0, left - step);
+                    break;
+                case 'ArrowRight':
+                    left = Math.min(gameArea.offsetWidth - selectedShip.offsetWidth, left + step);
+                    break;
+            }
+
+            selectedShip.style.top = top + 'px';
+            selectedShip.style.left = left + 'px';
+        });
+
+const questions = {
+
+
+        1: "¿Cuál es la capital del departamento de San Martín?",
+        2: "¿Qué río es el más importante en el departamento de San Martín?",
+        3: "¿Qué producto agrícola es muy conocido en San Martín?",
+        4: "¿Qué parque nacional se encuentra en San Martín?",
+        5: "¿Cuál es el principal atractivo turístico de la ciudad de Tarapoto?",
+        6: "¿En qué región natural del Perú se encuentra San Martín?",
+        7: "¿Qué idioma indígena es hablado en algunas comunidades de San Martín?",
+        8: "¿Cuál es uno de los platos típicos de San Martín?",
+        9: "¿Qué ciudad de San Martín es conocida como 'La Ciudad de las Orquídeas'?",
+        10: "¿Cuál es la fecha de fundación de la ciudad de Moyobamba?",
+        11: "¿Qué reserva natural en San Martín es conocida por su biodiversidad?",
+        12: "¿Qué fiesta popular se celebra en San Martín el 24 de junio?",
+        13: "¿Qué producto es San Martín uno de los principales productores en Perú?",
+        14: "¿Cuál es el nombre de la laguna turística ubicada cerca de Tarapoto?",
+        15: "¿Cuál es la altitud aproximada de la ciudad de Moyobamba?",
+        16: "¿Qué tipo de clima predomina en el departamento de San Martín?",
+        17: "¿Cuál es el nombre de una danza típica de San Martín?",
+        18: "¿Qué provincia de San Martín es conocida por su producción de arroz?",
+        19: "¿Qué planta medicinal es originaria de San Martín y se usa para tratar la malaria?",
+        20: "¿Qué río importante atraviesa la ciudad de Moyobamba?",
+        21: "¿Cuál es uno de los principales recursos naturales de San Martín?",
+        22: "¿Qué animal es emblemático del Parque Nacional Río Abiseo?",
+        23: "¿Cuál es una de las principales actividades económicas en San Martín?",
+        24: "¿Qué reserva natural es famosa por sus aves en San Martín?",
+        25: "¿Qué fiesta se celebra en San Martín el 15 de agosto?",
+        26: "¿Qué tipo de turismo es muy popular en San Martín?",
+        27: "¿Qué ciudad es conocida como 'La Ciudad de la Bella Durmiente'?",
+        28: "¿Cuál es el nombre de un famoso bosque de orquídeas en Moyobamba?",
+        29: "¿Qué ciudad de San Martín es famosa por su carnaval?",
+        30: "¿Qué recurso acuático es muy importante en San Martín?",
+        31: "¿Qué especie de ave es muy común en San Martín?",
+        32: "¿Cuál es el nombre de la cascada más alta ubicada en San Martín?",
+        33: "¿Qué festival cultural se celebra anualmente en Moyobamba?",
+        34: "¿Qué fruto amazónico es utilizado para la elaboración de bebidas tradicionales en San Martín?"
+        };
+
+function showPopup(number) {
+    const popup = document.getElementById('popup');
+    const popupText = document.getElementById('popup-text');
+    popupText.innerText = questions[number];
+    popup.style.display = 'flex';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+}
+
+    function hidePopup() {
+        const popup = document.getElementById('popup');
+        popup.style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
